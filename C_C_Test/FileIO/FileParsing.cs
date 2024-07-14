@@ -9,15 +9,18 @@ namespace C_C_Test.FileIO
     {
         private readonly ILogger<FileParsing> logger;
 
-        public FileParsing(ILogger<FileParsing> logger)
+        private readonly IConfiguration configuration;
+
+        public FileParsing(ILogger<FileParsing> logger, IConfiguration configuration)
         {
-            this.logger = logger;   
+            this.logger = logger;  
+            this.configuration = configuration;
         }
 
         public async Task<List<ParsedDataDto>> ParseFile(ValidationViewModel validationViewModel, List<string> RejectedRows)
         {
-            string FilePath = @"C:\C_C_TestData\C&CInterviewFile.txt";
-            string DirPath = @"C:\C_C_TestData";
+            var DirPath = GetDirectory();
+            var FilePath = DirPath + GetFile();
 
             List<ParsedDataDto> ParsedData = new List<ParsedDataDto>();
             int invalidRecords = 0;
@@ -167,6 +170,16 @@ namespace C_C_Test.FileIO
             }
 
             return ret;
+        }
+
+        private string GetDirectory()
+        {
+            return this.configuration["IOSettings:Directory"];
+        }
+
+        private string GetFile()
+        {
+            return this.configuration["IOSettings:Datafile"];
         }
     }
 }
