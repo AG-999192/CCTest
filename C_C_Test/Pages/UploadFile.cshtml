@@ -1,0 +1,45 @@
+﻿@page
+@model C_C_Test.Pages.UploadFileModel
+@{
+}
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                Validation Status
+            </th>
+            <th>
+                No. Successful Rows
+            </th>
+            <th>
+                No. Rejected Rows
+            </th>
+        </tr>
+    </thead>
+    <tbody> 
+    <tr>
+            <td>@Model.ValidationView.ValidationStatus</td>
+            <td>@Model.ValidationView.SuccessfulRows</td>
+            <td>@Model.ValidationView.RejectedRows</td>
+    </tr>
+
+    <thead>
+        <tr>
+            <th>
+                Rejected Rows
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+            @foreach (var w in Model.RejectedRows)
+            {
+            <tr>
+                <td>@w</td>
+            </tr>
+            }
+    </tbody>
+        
+    </tbody>
+</table>

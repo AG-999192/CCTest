@@ -1,0 +1,38 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">C&C Group Technical Test</h1>
+</div>
+
+<tbody>
+    
+    <td>
+        <a class="btn btn-primary btn-icon-split" asp-page="./ViewDatabase">
+            <span class="icon text-white-50">
+                <i class="fas fa-info-circle"></i>
+            </span>
+            <span class="text">View Database</span>
+        </a>
+    </td>
+    <td>
+        <a class="btn btn-primary btn-icon-split" asp-page="./UploadFile" asp-route-id="0">
+            <span class="icon text-white-50">
+                <i class="fas fa-info-circle"></i>
+            </span>
+            <span class="text">Validate File</span>
+        </a>
+    </td>
+    <td>
+        <a class="btn btn-primary btn-icon-split" asp-page="./UploadFile" asp-route-id="1">
+            <span class="icon text-white-50">
+                <i class="fas fa-info-circle"></i>
+            </span>
+            <span class="text">Upload File to Database</span>
+        </a>
+    </td>
+    
+</tbody>

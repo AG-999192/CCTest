@@ -1,0 +1,42 @@
+﻿@page
+@model C_C_Test.Pages.ViewDatabaseModel
+@{
+}
+
+<div id="messages"></div>
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                MPAN
+            </th>
+            <th>
+                Meter Serial
+            </th>
+            <th>
+                Date Of Installation
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                PostCode
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var w in Model.ViewDatabase)
+        {
+            <tr>
+                <td>@w.MPAN</td>
+                <td>@w.MeterSerial</td>
+                <td>@w.DateOfInstallation</td>
+                <td>@w.AddressLine</td>
+                <td>@w.PostCode</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
