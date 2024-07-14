@@ -1,3 +1,5 @@
+using C_C_Test.Conversions;
+using C_C_Test.DataAccess;
 using C_C_Test.FileIO;
 
 internal class Program
@@ -9,6 +11,8 @@ internal class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddScoped<IFileParsing, FileParsing>();
+        builder.Services.AddScoped<IDataRepository, DataRepository>();
+        builder.Services.AddScoped<IConversion, Conversion>();
 
         var app = builder.Build();
 

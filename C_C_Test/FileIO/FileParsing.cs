@@ -1,6 +1,8 @@
 ﻿using C_C_Test.Dtos;
 using C_C_Test.Emuns;
 using C_C_Test.Models;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Globalization;
 
 namespace C_C_Test.FileIO
