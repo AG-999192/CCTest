@@ -1,6 +1,8 @@
 using C_C_Test.Conversions;
 using C_C_Test.DataAccess;
 using C_C_Test.Models;
+using C_C_Test.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -14,11 +16,14 @@ namespace C_C_Test.Pages
 
         private readonly IConversion conversion;
 
-        public ViewDatabaseModel(IDataRepository dataRepository, ILogger<ViewDatabaseModel> logger, IConversion conversion)
+        private readonly IMediator mediator;
+
+        public ViewDatabaseModel(IDataRepository dataRepository, ILogger<ViewDatabaseModel> logger, IConversion conversion, IMediator mediator)
         {
             this.dataRepository = dataRepository;
             this.logger = logger;
             this.conversion = conversion;
+            this.mediator = mediator;
         }
      
         public List<DataViewModel> ViewDatabase { get; set; } = null!;
@@ -26,6 +31,8 @@ namespace C_C_Test.Pages
         public async Task<IActionResult> OnGet()
         {
             this.logger.LogDebug("Get method called on ViewDatabaseModel");
+
+            var existingData = await this.mediator.Send(new GetDataQuery() { });
 
             var retVal = await this.dataRepository.GetData();
 

@@ -1,6 +1,8 @@
+using C_C_Test;
 using C_C_Test.Conversions;
 using C_C_Test.DataAccess;
 using C_C_Test.FileIO;
+using MediatR;
 
 internal class Program
 {
@@ -13,6 +15,8 @@ internal class Program
         builder.Services.AddScoped<IFileParsing, FileParsing>();
         builder.Services.AddScoped<IDataRepository, DataRepository>();
         builder.Services.AddScoped<IConversion, Conversion>();
+
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
         var app = builder.Build();
 
@@ -32,6 +36,8 @@ internal class Program
         app.UseAuthorization();
 
         app.MapRazorPages();
+
+        
 
         app.Run();
     }
