@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace C_C_Test.Pages
 {
+    /// <summary>
+    /// Index page.
+    /// </summary>
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;

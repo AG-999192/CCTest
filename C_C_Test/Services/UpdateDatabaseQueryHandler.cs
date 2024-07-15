@@ -27,7 +27,7 @@ namespace C_C_Test.Services
             var dbStatus = new DatabaseStatusModel();
             DBStatusDto status = new DBStatusDto();
 
-            var parsedData = await this.fileParsing.ParseFile(new ValidationViewModel(), new List<string>());
+            var parsedData = await this.fileParsing.ParseFile();
 
             await this.dataRepository.AddData(parsedData, status);
 

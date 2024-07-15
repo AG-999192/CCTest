@@ -3,8 +3,11 @@ using C_C_Test.Models;
 
 namespace C_C_Test.Conversions
 {
+    /// <summary>
+    /// Interface for conversion.
+    /// </summary>
     public interface IConversion
     {
-        List<DataViewModel> MapRetrievedDataToDataView(List<RetrievedData> manifests);
+        List<DataViewModel> MapRetrievedDataToDataView(List<RetrievedDataDto> manifests);
     }
 }

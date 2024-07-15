@@ -2,6 +2,9 @@
 
 namespace C_C_Test.Models
 {
+    /// <summary>
+    /// Model to view Data
+    /// </summary>
     public class DataViewModel
     {
         public decimal MPAN { get; set; }

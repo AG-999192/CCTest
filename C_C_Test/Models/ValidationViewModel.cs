@@ -1,5 +1,8 @@
 ﻿namespace C_C_Test.Models
 {
+    /// <summary>
+    /// Model for validation of data.
+    /// </summary>
     public class ValidationViewModel
     {
         public int SuccessfulRows { get; set; }

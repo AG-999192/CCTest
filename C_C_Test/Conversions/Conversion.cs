@@ -4,6 +4,9 @@ using C_C_Test.Models;
 
 namespace C_C_Test.Conversions
 {
+    /// <summary>
+    /// A conversion class.
+    /// </summary>
     public class Conversion : IConversion
     {
         /// <summary>
@@ -15,7 +18,7 @@ namespace C_C_Test.Conversions
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<RetrievedData, DataViewModel>()
+                cfg.CreateMap<RetrievedDataDto, DataViewModel>()
                     .ForMember(dst => dst.MPAN, opt => opt.MapFrom(src => src.MPAN))
                     .ForMember(dst => dst.MeterSerial, opt => opt.MapFrom(src => src.MeterSerial))
                     .ForMember(dst => dst.DateOfInstallation, opt => opt.MapFrom(src => src.DateOfInstallation))
@@ -26,9 +29,14 @@ namespace C_C_Test.Conversions
             this.mapper = config.CreateMapper();
         }
 
-        public List<DataViewModel> MapRetrievedDataToDataView(List<RetrievedData> manifests)
+        /// <summary>
+        /// Converts RetrievedData to DataViewModel.
+        /// </summary>
+        /// <param name="manifests"></param>
+        /// <returns></returns>
+        public List<DataViewModel> MapRetrievedDataToDataView(List<RetrievedDataDto> manifests)
         {
-            return this.mapper.Map<List<RetrievedData>, List<DataViewModel>>(manifests);
+            return this.mapper.Map<List<RetrievedDataDto>, List<DataViewModel>>(manifests);
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿namespace C_C_Test.Dtos
 {
-    public class RetrievedData
+    /// <summary>
+    /// The RetrievedDataDto implementation.
+    /// </summary>
+    public class RetrievedDataDto
     {
         public decimal MPAN { get; set; }
 

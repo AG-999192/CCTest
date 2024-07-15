@@ -1,5 +1,8 @@
 ﻿namespace C_C_Test.Dtos
 {
+    /// <summary>
+    /// The ParsedDataDto implementation.
+    /// </summary>
     public record ParsedDataDto
     {
         public decimal MPAN { get; set; }

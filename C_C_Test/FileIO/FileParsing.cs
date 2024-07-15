@@ -7,19 +7,39 @@ using System.Globalization;
 
 namespace C_C_Test.FileIO
 {
+    /// <summary>
+    /// Implementation of the FileParsing class.
+    /// </summary>
     public class FileParsing : IFileParsing
     {
+        /// <summary>
+        /// The logger.
+        /// </summary>
         private readonly ILogger<FileParsing> logger;
 
+        /// <summary>
+        /// Config.
+        /// </summary>
         private readonly IConfiguration configuration;
 
+        /// <summary>
+        /// Constructor for FileParsing.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="configuration"></param>
         public FileParsing(ILogger<FileParsing> logger, IConfiguration configuration)
         {
             this.logger = logger;  
             this.configuration = configuration;
         }
 
-        public async Task<List<ParsedDataDto>> ParseFile(ValidationViewModel validationViewModel, List<string> RejectedRows)
+        /// <summary>
+        /// The ParseFile method
+        /// </summary>
+        /// <param name="validationViewModel"></param>
+        /// <param name="RejectedRows"></param>
+        /// <returns>List<ParsedDataDto></returns>
+        public async Task<List<ParsedDataDto>> ParseFile(ValidationViewModel validationViewModel)
         {
             var DirPath = GetDirectory();
             var FilePath = DirPath + GetFile();
@@ -57,13 +77,13 @@ namespace C_C_Test.FileIO
                                             }
                                             else
                                             {
-                                                RejectedRows.Add(line);
+                                                validationViewModel.RejectedRowsList.Add(line);
                                                 invalidRecords++;
                                             }
                                         }
                                         else
                                         {
-                                            RejectedRows.Add(line);
+                                            validationViewModel.RejectedRowsList.Add(line);
                                             invalidRecords++;
                                             // Invalid
                                         }
@@ -103,6 +123,86 @@ namespace C_C_Test.FileIO
             return ParsedData;
         }
 
+        /// <summary>
+        /// The ParseFile method
+        /// </summary>
+        /// <param name="validationViewModel"></param>
+        /// <param name="RejectedRows"></param>
+        /// <returns>List<ParsedDataDto></returns>
+        public async Task<List<ParsedDataDto>> ParseFile()
+        {
+            var DirPath = GetDirectory();
+            var FilePath = DirPath + GetFile();
+
+            List<ParsedDataDto> ParsedData = new List<ParsedDataDto>();
+            string validationstatus = "Sucessfully Validate File";
+
+            try
+            {
+                if (Directory.Exists(DirPath))
+                {
+                    if (IsDataFile(FilePath))
+                    {
+                        if (System.IO.File.Exists(FilePath))
+                        {
+                            using (StreamReader sw = new StreamReader(FilePath)) //open file
+                            {
+                                bool bContinueParsing = true;
+
+                                while (bContinueParsing)
+                                {
+                                    string line = await sw.ReadLineAsync();
+
+                                    if (line != null)
+                                    {
+                                        string[] datafields = line.Split('|');
+
+                                        if (datafields.Length >= 3)
+                                        {
+                                            var record = ParseData(datafields, datafields.Length);
+                                            if (record != null)
+                                            {
+                                                ParsedData.Add(record);
+                                            }
+                                            
+                                        }
+                                    }
+                                    else
+                                    {
+                                        bContinueParsing = false;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            validationstatus = "Failed to access file";
+                        }
+                    }
+                }
+                else
+                {
+                    validationstatus = "Failed to access directory";
+                }
+            }
+            catch (Exception ex)
+            {
+                validationstatus = "Failed to process file due to excception";
+                this.logger.LogError("Exception thrown in ParseFile", ex.Message);
+            }
+            finally
+            {
+                this.logger.LogDebug(validationstatus);
+            }
+
+            return ParsedData;
+        }
+
+        /// <summary>
+        /// Check datafile is of correct type
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         bool IsDataFile(string filename)
         {
             // if the file ends with a known data suffix, return true
@@ -111,23 +211,21 @@ namespace C_C_Test.FileIO
             return false;
         }
 
+        /// <summary>
+        /// The ParseData function.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="items"></param>
+        /// <returns>ParsedDataDto</returns>
         ParsedDataDto? ParseData(string[] data, int items)
         {
             var ret = new ParsedDataDto();
             CultureInfo enUK = new CultureInfo("en-GB");
             DateTime dateValue;
 
-            if (string.IsNullOrEmpty(data[(int)DataEnums.MPAN]) || data[(int)DataEnums.MPAN].Length != 13)
-            {
-                return null;
-            }
-
-            if (string.IsNullOrEmpty(data[(int)DataEnums.MeterSerial]) || data[(int)DataEnums.MeterSerial].Length > 10)
-            {
-                return null;
-            }
-
-            if (string.IsNullOrEmpty(data[(int)DataEnums.DateOfInstallation]) || data[(int)DataEnums.DateOfInstallation].Length != 8)
+            if (string.IsNullOrEmpty(data[(int)DataEnums.MPAN]) || data[(int)DataEnums.MPAN].Length != 13 ||
+                string.IsNullOrEmpty(data[(int)DataEnums.MeterSerial]) || data[(int)DataEnums.MeterSerial].Length > 10 ||
+                string.IsNullOrEmpty(data[(int)DataEnums.DateOfInstallation]) || data[(int)DataEnums.DateOfInstallation].Length != 8)
             {
                 return null;
             }
@@ -174,11 +272,19 @@ namespace C_C_Test.FileIO
             return ret;
         }
 
+        /// <summary>
+        /// Get directory from config.
+        /// </summary>
+        /// <returns></returns>
         private string GetDirectory()
         {
             return this.configuration["IOSettings:Directory"];
         }
 
+        /// <summary>
+        /// Get directory from config.
+        /// </summary>
+        /// <returns></returns>
         private string GetFile()
         {
             return this.configuration["IOSettings:Datafile"];

@@ -3,6 +3,9 @@ using Microsoft.Data.SqlClient;
 
 namespace C_C_Test.DataAccess
 {
+    /// <summary>
+    /// The implementation of the DataRepository.
+    /// </summary>
     public class DataRepository : IDataRepository
     {
         /// <summary>
@@ -10,28 +13,36 @@ namespace C_C_Test.DataAccess
         /// </summary>
         private readonly ILogger logger;
 
+        /// <summary>
+        /// The config.
+        /// </summary>
         private readonly IConfiguration configuration;
 
-
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="GarageRepository"/> class.
+        /// Initializes a new instance of the <see cref="DataRepository"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <param name="dbContext">The context.</param>
+        /// <param name="configuration">The configuration.</param>
         public DataRepository(ILogger<DataRepository> logger, IConfiguration configuration)
         {
             this.logger = logger;
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// Add data to the databse using list.
+        /// </summary>
+        /// <param name="ParsedData"></param>
+        /// <param name="status"></param>
+        /// <returns>Task</returns>
         public async Task AddData(List<ParsedDataDto> ParsedData, DBStatusDto status)
         {
             SqlConnection conn = new SqlConnection(DefaultConnection());
 
-            // Use Batching for storing
+            // TODO use batching for storing.
 
             String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
+
             conn.Open();
 
             foreach (var data in ParsedData)
@@ -70,6 +81,11 @@ namespace C_C_Test.DataAccess
             return;
         }
 
+        /// <summary>
+        /// Add data to database using single record.
+        /// </summary>
+        /// <param name="ParsedData"></param>
+        /// <returns>DBStatusDto</returns>
         public async Task<DBStatusDto> AddData(ParsedDataDto ParsedData)
         {
             var ret = new DBStatusDto();
@@ -106,9 +122,13 @@ namespace C_C_Test.DataAccess
             return ret;
         }
 
-        public async Task<List<RetrievedData>> GetData()
+        /// <summary>
+        /// Returns list of records from database.
+        /// </summary>
+        /// <returns>List<RetrievedData></returns>
+        public async Task<List<RetrievedDataDto>> GetData()
         {
-            var retData = new List<RetrievedData>();
+            var retData = new List<RetrievedDataDto>();
 
             SqlConnection conn = new SqlConnection(DefaultConnection());
             conn.Open();
@@ -120,7 +140,7 @@ namespace C_C_Test.DataAccess
                 {
                     while (await reader.ReadAsync())
                     {
-                        retData.Add(new RetrievedData { 
+                        retData.Add(new RetrievedDataDto { 
                             MPAN = reader.GetDecimal(0), 
                             MeterSerial = reader.GetString(1), 
                             DateOfInstallation = reader.GetDateTime(2).ToString(),
@@ -136,8 +156,10 @@ namespace C_C_Test.DataAccess
             return retData;
         }
 
-
-
+        /// <summary>
+        /// Gets the connection string
+        /// </summary>
+        /// <returns>ConnectionStrings/returns>
         private string DefaultConnection()
         {
             return this.configuration["ConnectionStrings:DefaultConnection"];

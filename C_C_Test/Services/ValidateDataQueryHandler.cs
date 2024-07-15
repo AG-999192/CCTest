@@ -27,7 +27,7 @@ namespace C_C_Test.Services
         {
             ValidationViewModel validateData = new ValidationViewModel { RejectedRowsList = new List<string>()};
 
-            await this.fileParsing.ParseFile(validateData, validateData.RejectedRowsList);
+            await this.fileParsing.ParseFile(validateData);
 
             return validateData;
         }

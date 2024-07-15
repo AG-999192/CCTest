@@ -2,12 +2,15 @@
 
 namespace C_C_Test.DataAccess
 {
+    /// <summary>
+    /// Interface for the data repository.
+    /// </summary>
     public interface IDataRepository
     {
         Task AddData(List<ParsedDataDto> ParsedData, DBStatusDto status);
 
         Task<DBStatusDto> AddData(ParsedDataDto ParsedData);
 
-        Task<List<RetrievedData>> GetData();
+        Task<List<RetrievedDataDto>> GetData();
     }
 }

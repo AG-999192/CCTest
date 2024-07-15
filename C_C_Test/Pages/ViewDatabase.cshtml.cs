@@ -6,16 +6,32 @@ using C_C_Test.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace C_C_Test.Pages
 {
+    /// <summary>
+    /// ViewDatabaseModel implementation.
+    /// </summary>
     public class ViewDatabaseModel : PageModel
     {
-       
+       /// <summary>
+       /// The logger.
+       /// </summary>
         private readonly ILogger logger;
 
+        /// <summary>
+        /// The Mediator.
+        /// </summary>
         private readonly IMediator mediator;
 
+        /// <summary>
+        /// The constructor.
+        /// </summary>
+        /// <param name="dataRepository"></param>
+        /// <param name="logger"></param>
+        /// <param name="conversion"></param>
+        /// <param name="mediator"></param>
         public ViewDatabaseModel(IDataRepository dataRepository, ILogger<ViewDatabaseModel> logger, IConversion conversion, IMediator mediator)
         {
             this.logger = logger;
@@ -30,34 +46,10 @@ namespace C_C_Test.Pages
         [BindProperty(SupportsGet = true, Name = "p")]
         public int PageIndex { get; set; } = 1;
 
-        [BindProperty(SupportsGet = true)]
-        public string Filter { get; set; } = string.Empty;
-
-        [BindProperty(SupportsGet = true)]
-        public string Sort { get; set; } = "garagenumber";
-
-        [BindProperty(SupportsGet = true)]
-        public SortDirection Direction { get; set; } = SortDirection.Asc;
-
-        [BindProperty(SupportsGet = true, Name = "listtype")]
-        public GarageListType ListType { get; set; }
-
         /// <summary>
-        /// Gets link data fpr page.
+        /// OnGet()
         /// </summary>
-        public Dictionary<string, string> LinkData =>
-          new()
-          {
-              { "filter", this.Filter },
-              { "p", this.ViewDatabase.CurrentPage.ToString() },
-              { "sort", this.Sort },
-              { "direction", this.Direction.ToString() },
-              { "listtype", this.ListType.ToString() },
-          };
-
-
-       
-
+        /// <returns>IActionResult</returns>
         public async Task<IActionResult> OnGet()
         {
             this.logger.LogDebug("Get method called on ViewDatabaseModel");
@@ -68,40 +60,9 @@ namespace C_C_Test.Pages
 
             this.ViewDatabase = vmsq.ToPagedList(this.PageIndex, 50);
 
-            // Add pagination
+            // TODO Add pagination
 
             return this.Page();
         }
-    }
-
-    public enum SortDirection
-    {
-        /// <summary>
-        /// Ascending.
-        /// </summary>
-        Asc,
-
-        /// <summary>
-        /// Descending.
-        /// </summary>
-        Desc,
-    }
-
-    public enum GarageListType
-    {
-        /// <summary>
-        /// Get all garages.
-        /// </summary>
-        All,
-
-        /// <summary>
-        /// Get garages that have readers that have outstanding table loads.
-        /// </summary>
-        HasReadersWithOutstandingTableLoads,
-
-        /// <summary>
-        /// Get garages that have readers that have no outstanding table loads.
-        /// </summary>
-        HasNoReadersWithOutstandingTableLoads,
     }
 }
