@@ -23,6 +23,15 @@ namespace C_C_Test.FileIO
         private readonly IConfiguration configuration;
 
         /// <summary>
+        /// Consts
+        /// </summary>
+        const int MPAN_SIZE = 13;
+
+        const int MeterSerial_SIZE = 10;
+
+        const int DateOfInstallation_SIZE = 8;
+
+        /// <summary>
         /// Constructor for FileParsing.
         /// </summary>
         /// <param name="logger"></param>
@@ -223,9 +232,9 @@ namespace C_C_Test.FileIO
             CultureInfo enUK = new CultureInfo("en-GB");
             DateTime dateValue;
 
-            if (string.IsNullOrEmpty(data[(int)DataEnums.MPAN]) || data[(int)DataEnums.MPAN].Length != 13 ||
-                string.IsNullOrEmpty(data[(int)DataEnums.MeterSerial]) || data[(int)DataEnums.MeterSerial].Length > 10 ||
-                string.IsNullOrEmpty(data[(int)DataEnums.DateOfInstallation]) || data[(int)DataEnums.DateOfInstallation].Length != 8)
+            if (string.IsNullOrEmpty(data[(int)DataEnums.MPAN]) || data[(int)DataEnums.MPAN].Length != MPAN_SIZE ||
+                string.IsNullOrEmpty(data[(int)DataEnums.MeterSerial]) || data[(int)DataEnums.MeterSerial].Length > MeterSerial_SIZE ||
+                string.IsNullOrEmpty(data[(int)DataEnums.DateOfInstallation]) || data[(int)DataEnums.DateOfInstallation].Length != DateOfInstallation_SIZE)
             {
                 return null;
             }
