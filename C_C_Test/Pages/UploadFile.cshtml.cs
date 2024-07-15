@@ -28,18 +28,25 @@ namespace C_C_Test.Pages
             this.dataRepository = dataRepository;
         }
 
-        public ValidationViewModel ValidationView { get; set; }
+        public DatabaseStatusModel DBStatusView { get; set; }
 
         public List<string> RejectedRows { get; set; } = null!;
 
         public async Task<IActionResult> OnGet(int id)
         {
+            // Add new page for DB update
+
             this.logger.LogDebug("Get method called on UploadFileModel with {Id}", id);
             List<ParsedDataDto> ParsedData;
-            ValidationView = new ValidationViewModel();
+            DBStatusView = new DatabaseStatusModel();
+            var ValidationView = new ValidationViewModel();
             RejectedRows = new List<string>();
 
             ParsedData = await this.fileParsing.ParseFile(ValidationView, RejectedRows);
+
+            var ret = await this.dataRepository.AddData(ParsedData[0]);
+            DBStatusView.QueryStatus = ret.QueryStatus;
+            DBStatusView.SuccessfulWrites = ret.SuccessfulWrites;
 
             return this.Page();
         }

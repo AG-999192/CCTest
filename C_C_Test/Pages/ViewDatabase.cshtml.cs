@@ -23,13 +23,15 @@ namespace C_C_Test.Pages
      
         public List<DataViewModel> ViewDatabase { get; set; } = null!;
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
             this.logger.LogDebug("Get method called on ViewDatabaseModel");
 
-            var retVal = this.dataRepository.GetData();
+            var retVal = await this.dataRepository.GetData();
 
             ViewDatabase = this.conversion.MapRetrievedDataToDataView(retVal);
+
+            // Add pagination
 
             return this.Page();
         }

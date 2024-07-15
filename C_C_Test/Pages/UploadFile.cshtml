@@ -7,39 +7,16 @@
     <thead>
         <tr>
             <th>
-                Validation Status
+                Query Status
             </th>
             <th>
-                No. Successful Rows
-            </th>
-            <th>
-                No. Rejected Rows
+                No. Successful Writes
             </th>
         </tr>
     </thead>
     <tbody> 
     <tr>
-            <td>@Model.ValidationView.ValidationStatus</td>
-            <td>@Model.ValidationView.SuccessfulRows</td>
-            <td>@Model.ValidationView.RejectedRows</td>
-    </tr>
-
-    <thead>
-        <tr>
-            <th>
-                Rejected Rows
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-
-            @foreach (var w in Model.RejectedRows)
-            {
-            <tr>
-                <td>@w</td>
-            </tr>
-            }
-    </tbody>
-        
+            <td>@Model.DBStatusView.QueryStatus</td>
+            <td>@Model.DBStatusView.SuccessfulWrites</td> 
     </tbody>
 </table>

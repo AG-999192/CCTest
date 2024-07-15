@@ -2,7 +2,7 @@
 {
     public record ParsedDataDto
     {
-        public int MPAN { get; set; }
+        public decimal MPAN { get; set; }
 
         public string MeterSerial { get; set; } = string.Empty;
 

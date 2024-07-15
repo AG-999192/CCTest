@@ -149,8 +149,8 @@ namespace C_C_Test.FileIO
             {
                 return null;
             }
-            int mpan;
-            int.TryParse(data[(int)DataEnums.MPAN], out mpan);
+            decimal mpan;
+            decimal.TryParse(data[(int)DataEnums.MPAN], out mpan);
             ret.MPAN = mpan;
             ret.MeterSerial = data[(int)DataEnums.MeterSerial];
             ret.DateOfInstallation = data[(int)DataEnums.DateOfInstallation];
