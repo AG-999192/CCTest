@@ -7,5 +7,7 @@
         public int RejectedRows { get; set; }
 
         public string ValidationStatus { get; set; } = string.Empty;
+
+        public List<string> RejectedRowsList { get; set; } = null!;
     }
 }

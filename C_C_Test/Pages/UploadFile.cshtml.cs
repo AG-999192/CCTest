@@ -3,6 +3,8 @@ using C_C_Test.Dtos;
 using C_C_Test.Emuns;
 using C_C_Test.FileIO;
 using C_C_Test.Models;
+using C_C_Test.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -18,14 +20,12 @@ namespace C_C_Test.Pages
         /// Logger.
         /// </summary>
         private readonly ILogger logger;
-        private readonly IFileParsing fileParsing;
-        private readonly IDataRepository dataRepository;
+        private readonly IMediator mediator;
 
-        public UploadFileModel(ILogger<UploadFileModel> logger, IFileParsing fileParsing, IDataRepository dataRepository)
+        public UploadFileModel(ILogger<UploadFileModel> logger, IMediator mediator)
         {
             this.logger = logger;
-            this.fileParsing = fileParsing;
-            this.dataRepository = dataRepository;
+            this.mediator = mediator;
         }
 
         public DatabaseStatusModel DBStatusView { get; set; }
@@ -34,19 +34,8 @@ namespace C_C_Test.Pages
 
         public async Task<IActionResult> OnGet(int id)
         {
-            // Add new page for DB update
-
             this.logger.LogDebug("Get method called on UploadFileModel with {Id}", id);
-            List<ParsedDataDto> ParsedData;
-            DBStatusView = new DatabaseStatusModel();
-            var ValidationView = new ValidationViewModel();
-            RejectedRows = new List<string>();
-
-            ParsedData = await this.fileParsing.ParseFile(ValidationView, RejectedRows);
-
-            var ret = await this.dataRepository.AddData(ParsedData[0]);
-            DBStatusView.QueryStatus = ret.QueryStatus;
-            DBStatusView.SuccessfulWrites = ret.SuccessfulWrites;
+            DBStatusView = await this.mediator.Send(new UpdateDatabaseQuery() { });
 
             return this.Page();
         }

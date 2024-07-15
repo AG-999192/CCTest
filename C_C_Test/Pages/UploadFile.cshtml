@@ -12,11 +12,15 @@
             <th>
                 No. Successful Writes
             </th>
+            <th>
+                No. Failed Writes
+            </th>
         </tr>
     </thead>
     <tbody> 
     <tr>
             <td>@Model.DBStatusView.QueryStatus</td>
             <td>@Model.DBStatusView.SuccessfulWrites</td> 
+            <td>@Model.DBStatusView.FailedWrites</td>
     </tbody>
 </table>

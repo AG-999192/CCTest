@@ -4,7 +4,7 @@ namespace C_C_Test.DataAccess
 {
     public interface IDataRepository
     {
-        Task<DBStatusDto> AddData(List<ParsedDataDto> ParsedData);
+        Task AddData(List<ParsedDataDto> ParsedData, DBStatusDto status);
 
         Task<DBStatusDto> AddData(ParsedDataDto ParsedData);
 

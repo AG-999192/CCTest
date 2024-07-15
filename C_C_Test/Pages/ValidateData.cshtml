@@ -33,7 +33,7 @@
     </thead>
     <tbody>
 
-            @foreach (var w in Model.RejectedRows)
+            @foreach (var w in Model.ValidationView.RejectedRowsList)
             {
             <tr>
                 <td>@w</td>

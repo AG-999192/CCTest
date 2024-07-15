@@ -13,6 +13,7 @@ namespace C_C_Test.DataAccess
         private readonly IConfiguration configuration;
 
 
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GarageRepository"/> class.
         /// </summary>
@@ -24,38 +25,49 @@ namespace C_C_Test.DataAccess
             this.configuration = configuration;
         }
 
-        public async Task<DBStatusDto> AddData(List<ParsedDataDto> ParsedData)
+        public async Task AddData(List<ParsedDataDto> ParsedData, DBStatusDto status)
         {
-            var ret = new DBStatusDto();
-            ret.QueryStatus = "OK";
-
             SqlConnection conn = new SqlConnection(DefaultConnection());
 
             // Use Batching for storing
 
             String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
+            conn.Open();
 
-            using (SqlCommand command = new SqlCommand(query, conn))
+            foreach (var data in ParsedData)
             {
-                command.Parameters.AddWithValue("@MPAN", "1012345687466");
-                command.Parameters.AddWithValue("@MeterSerial", "A00E355698");
-                command.Parameters.AddWithValue("@DateOfInstallation", "19970801");
-                command.Parameters.AddWithValue("@AddressLine1", "ROSE YARD");
-                command.Parameters.AddWithValue("@PostCode", "NE99P66");
-
-                conn.Open();
-                int result = await command.ExecuteNonQueryAsync();
-
-                // Check Error
-                if (result < 0)
+                using (SqlCommand command = new SqlCommand(query, conn))
                 {
-                    this.logger.LogError("Error inserting data into Database");
-                    ret.QueryStatus = "Error inserting data into Database";
+                    command.Parameters.AddWithValue("@MPAN", data.MPAN.ToString());
+                    command.Parameters.AddWithValue("@MeterSerial", data.MeterSerial);
+                    command.Parameters.AddWithValue("@DateOfInstallation", data.DateOfInstallation);
+                    command.Parameters.AddWithValue("@AddressLine1", data.AddressLine ?? string.Empty);
+                    command.Parameters.AddWithValue("@PostCode", data.PostCode ?? string.Empty);
+
+                    int result = await command.ExecuteNonQueryAsync();
+
+                    // Check Error
+                    if (result < 0)
+                    {
+                        this.logger.LogError("Error inserting data into Database");
+                        status.QueryStatus = "Error inserting data into Database";
+                        status.FailedWrites++;
+                    }
+                    else
+                    {
+                        status.SuccessfulWrites++;
+                    }
+
                 }
             }
             conn.Close();
 
-            return ret;
+            if( string.IsNullOrEmpty(status.QueryStatus))
+            {
+                status.QueryStatus = "OK";
+            }
+
+            return;
         }
 
         public async Task<DBStatusDto> AddData(ParsedDataDto ParsedData)
