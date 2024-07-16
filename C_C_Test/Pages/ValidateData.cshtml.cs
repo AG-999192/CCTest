@@ -41,7 +41,7 @@ namespace C_C_Test.Pages
         public ValidationViewModel ValidationView { get; set; }
 
         /// <summary>
-        /// OnGet()
+        /// OnGet() method
         /// </summary>
         /// <returns>IActionResult</returns>
         public async Task<IActionResult> OnGet()

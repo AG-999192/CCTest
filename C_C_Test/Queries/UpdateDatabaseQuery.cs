@@ -4,6 +4,7 @@ namespace C_C_Test.Queries
 {
     /// <summary>
     /// Implementation
+    /// Returns DatabaseStatusModel
     /// </summary>
     public class UpdateDatabaseQuery : QueryBase<DatabaseStatusModel>
     {

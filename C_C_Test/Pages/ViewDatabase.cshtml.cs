@@ -28,9 +28,7 @@ namespace C_C_Test.Pages
         /// <summary>
         /// The constructor.
         /// </summary>
-        /// <param name="dataRepository"></param>
         /// <param name="logger"></param>
-        /// <param name="conversion"></param>
         /// <param name="mediator"></param>
         public ViewDatabaseModel(ILogger<ViewDatabaseModel> logger, IMediator mediator)
         {

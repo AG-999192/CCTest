@@ -3,7 +3,7 @@
     /// <summary>
     /// The ParsedDataDto implementation.
     /// </summary>
-    public record ParsedDataDto
+    public class ParsedDataDto
     {
         public decimal MPAN { get; set; }
 

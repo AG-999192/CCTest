@@ -4,6 +4,7 @@ namespace C_C_Test.Queries
 {
     /// <summary>
     /// Implementation
+    /// Returns List<DataViewModel>
     /// </summary>
     public class GetDataQuery : QueryBase<List<DataViewModel>>
     {

@@ -103,8 +103,6 @@ namespace C_C_Test.DataAccess
 
                 SqlConnection conn = new SqlConnection(DefaultConnection());
 
-                // Use Batching for storing
-
                 String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
 
                 using (SqlCommand command = new SqlCommand(query, conn))

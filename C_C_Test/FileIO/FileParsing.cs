@@ -291,7 +291,7 @@ namespace C_C_Test.FileIO
         }
 
         /// <summary>
-        /// Get directory from config.
+        /// Get filename from config.
         /// </summary>
         /// <returns></returns>
         private string GetFile()
