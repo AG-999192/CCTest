@@ -9,19 +9,34 @@ using MediatR;
 
 namespace C_C_Test.Services
 {
+    /// <summary>
+    /// Implewents UpdateDatabaseQueryHandler
+    /// </summary>
     public class UpdateDatabaseQueryHandler : IRequestHandler<UpdateDatabaseQuery, DatabaseStatusModel>
     {
         private readonly ILogger logger;
         private readonly IFileParsing fileParsing;
         private readonly IDataRepository dataRepository;
 
-        public UpdateDatabaseQueryHandler(IDataRepository dataRepository, ILogger<ViewDatabaseModel> logger, IFileParsing fileParsing)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dataRepository"></param>
+        /// <param name="logger"></param>
+        /// <param name="fileParsing"></param>
+        public UpdateDatabaseQueryHandler(IDataRepository dataRepository, ILogger<UpdateDatabaseQueryHandler> logger, IFileParsing fileParsing)
         {
             this.dataRepository = dataRepository;
             this.logger = logger;
             this.fileParsing = fileParsing;
         }
 
+        /// <summary>
+        /// Query Handler
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<DatabaseStatusModel> Handle(UpdateDatabaseQuery request, CancellationToken cancellationToken)
         {
             var dbStatus = new DatabaseStatusModel();

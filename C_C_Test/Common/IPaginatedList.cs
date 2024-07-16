@@ -3,7 +3,7 @@
     using System.Collections;
 
     /// <summary>
-    /// Pagination Interface for common pagination results.
+    /// Pagination Interface.
     /// </summary>
     public interface IPaginatedList : IList
     {

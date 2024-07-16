@@ -32,7 +32,7 @@ namespace C_C_Test.Pages
         /// <param name="logger"></param>
         /// <param name="conversion"></param>
         /// <param name="mediator"></param>
-        public ViewDatabaseModel(IDataRepository dataRepository, ILogger<ViewDatabaseModel> logger, IConversion conversion, IMediator mediator)
+        public ViewDatabaseModel(ILogger<ViewDatabaseModel> logger, IMediator mediator)
         {
             this.logger = logger;
             this.mediator = mediator;

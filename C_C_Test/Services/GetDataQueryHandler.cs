@@ -7,6 +7,9 @@ using MediatR;
 
 namespace C_C_Test.Services
 {
+    /// <summary>
+    /// Implementation of GetDataQueryHandler
+    /// </summary>
     public class GetDataQueryHandler : IRequestHandler<GetDataQuery, List<DataViewModel>>
     {
         private readonly IDataRepository dataRepository;
@@ -15,13 +18,25 @@ namespace C_C_Test.Services
 
         private readonly IConversion conversion;
 
-        public GetDataQueryHandler(IDataRepository dataRepository, ILogger<ViewDatabaseModel> logger, IConversion conversion)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dataRepository"></param>
+        /// <param name="logger"></param>
+        /// <param name="conversion"></param>
+        public GetDataQueryHandler(IDataRepository dataRepository, ILogger<GetDataQueryHandler> logger, IConversion conversion)
         {
             this.dataRepository = dataRepository;
             this.logger = logger;
             this.conversion = conversion;
         }
 
+        /// <summary>
+        /// Handles query.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>List<DataViewModel></returns>
         public async Task<List<DataViewModel>> Handle(GetDataQuery request, CancellationToken cancellationToken)
         {
             List<DataViewModel> viewDatabase = new List<DataViewModel>();

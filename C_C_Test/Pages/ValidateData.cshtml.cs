@@ -29,7 +29,7 @@ namespace C_C_Test.Pages
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="mediator"></param>
-        public ValidateDataModel(ILogger<UploadFileModel> logger, IMediator mediator)
+        public ValidateDataModel(ILogger<ValidateDataModel> logger, IMediator mediator)
         {
             this.logger = logger;
             this.mediator = mediator;

@@ -118,7 +118,7 @@ namespace C_C_Test.FileIO
             catch (Exception ex)
             {
                 validationstatus = "Failed to process file due to excception";
-                this.logger.LogError("Exception thrown in ParseFile", ex.Message);
+                this.logger.LogError("Exception thrown in ParseFile {0}", ex.Message);
             }
             finally
             {
@@ -197,7 +197,7 @@ namespace C_C_Test.FileIO
             catch (Exception ex)
             {
                 validationstatus = "Failed to process file due to excception";
-                this.logger.LogError("Exception thrown in ParseFile", ex.Message);
+                this.logger.LogError("Exception thrown in ParseFile {0}", ex.Message);
             }
             finally
             {

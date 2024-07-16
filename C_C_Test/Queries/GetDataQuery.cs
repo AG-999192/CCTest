@@ -2,10 +2,13 @@
 
 namespace C_C_Test.Queries
 {
+    /// <summary>
+    /// Implementation
+    /// </summary>
     public class GetDataQuery : QueryBase<List<DataViewModel>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetBusOperatorsQuery"/> class.
+        /// constructor.
         /// </summary>
         public GetDataQuery()
         {

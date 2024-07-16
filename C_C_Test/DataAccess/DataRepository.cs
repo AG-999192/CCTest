@@ -37,45 +37,52 @@ namespace C_C_Test.DataAccess
         /// <returns>Task</returns>
         public async Task AddData(List<ParsedDataDto> ParsedData, DBStatusDto status)
         {
-            SqlConnection conn = new SqlConnection(DefaultConnection());
-
-            // TODO use batching for storing.
-
-            String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
-
-            conn.Open();
-
-            foreach (var data in ParsedData)
+            try
             {
-                using (SqlCommand command = new SqlCommand(query, conn))
+                SqlConnection conn = new SqlConnection(DefaultConnection());
+
+                // TODO use batching for storing.
+
+                String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
+
+                conn.Open();
+
+                foreach (var data in ParsedData)
                 {
-                    command.Parameters.AddWithValue("@MPAN", data.MPAN.ToString());
-                    command.Parameters.AddWithValue("@MeterSerial", data.MeterSerial);
-                    command.Parameters.AddWithValue("@DateOfInstallation", data.DateOfInstallation);
-                    command.Parameters.AddWithValue("@AddressLine1", data.AddressLine ?? string.Empty);
-                    command.Parameters.AddWithValue("@PostCode", data.PostCode ?? string.Empty);
-
-                    int result = await command.ExecuteNonQueryAsync();
-
-                    // Check Error
-                    if (result < 0)
+                    using (SqlCommand command = new SqlCommand(query, conn))
                     {
-                        this.logger.LogError("Error inserting data into Database");
-                        status.QueryStatus = "Error inserting data into Database";
-                        status.FailedWrites++;
-                    }
-                    else
-                    {
-                        status.SuccessfulWrites++;
-                    }
+                        command.Parameters.AddWithValue("@MPAN", data.MPAN.ToString());
+                        command.Parameters.AddWithValue("@MeterSerial", data.MeterSerial);
+                        command.Parameters.AddWithValue("@DateOfInstallation", data.DateOfInstallation);
+                        command.Parameters.AddWithValue("@AddressLine1", data.AddressLine ?? string.Empty);
+                        command.Parameters.AddWithValue("@PostCode", data.PostCode ?? string.Empty);
 
+                        int result = await command.ExecuteNonQueryAsync();
+
+                        // Check Error
+                        if (result < 0)
+                        {
+                            this.logger.LogError("Error inserting data into Database");
+                            status.QueryStatus = "Error inserting data into Database";
+                            status.FailedWrites++;
+                        }
+                        else
+                        {
+                            status.SuccessfulWrites++;
+                        }
+
+                    }
+                }
+                conn.Close();
+
+                if (string.IsNullOrEmpty(status.QueryStatus))
+                {
+                    status.QueryStatus = "OK";
                 }
             }
-            conn.Close();
-
-            if( string.IsNullOrEmpty(status.QueryStatus))
+            catch (Exception ex)
             {
-                status.QueryStatus = "OK";
+                this.logger.LogError("Exception thrown accessing Database {0}", ex.Message);
             }
 
             return;
@@ -89,35 +96,43 @@ namespace C_C_Test.DataAccess
         public async Task<DBStatusDto> AddData(ParsedDataDto ParsedData)
         {
             var ret = new DBStatusDto();
-            ret.QueryStatus = "OK";
 
-            SqlConnection conn = new SqlConnection(DefaultConnection());
-
-            // Use Batching for storing
-
-            String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
-
-            using (SqlCommand command = new SqlCommand(query, conn))
+            try
             {
-                command.Parameters.AddWithValue("@MPAN", ParsedData.MPAN.ToString());
-                command.Parameters.AddWithValue("@MeterSerial", ParsedData.MeterSerial);
-                command.Parameters.AddWithValue("@DateOfInstallation", ParsedData.DateOfInstallation);
-                command.Parameters.AddWithValue("@AddressLine1", ParsedData.AddressLine ?? string.Empty);
-                command.Parameters.AddWithValue("@PostCode", ParsedData.PostCode ?? string.Empty);
+                ret.QueryStatus = "OK";
 
-                conn.Open();
-                int result = await command.ExecuteNonQueryAsync();
+                SqlConnection conn = new SqlConnection(DefaultConnection());
 
-                // Check Error
-                if (result < 0)
+                // Use Batching for storing
+
+                String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
+
+                using (SqlCommand command = new SqlCommand(query, conn))
                 {
-                    this.logger.LogError("Error inserting data into Database");
-                    ret.QueryStatus = "Error inserting data into Database";
-                }
+                    command.Parameters.AddWithValue("@MPAN", ParsedData.MPAN.ToString());
+                    command.Parameters.AddWithValue("@MeterSerial", ParsedData.MeterSerial);
+                    command.Parameters.AddWithValue("@DateOfInstallation", ParsedData.DateOfInstallation);
+                    command.Parameters.AddWithValue("@AddressLine1", ParsedData.AddressLine ?? string.Empty);
+                    command.Parameters.AddWithValue("@PostCode", ParsedData.PostCode ?? string.Empty);
 
-                ret.SuccessfulWrites = result;
+                    conn.Open();
+                    int result = await command.ExecuteNonQueryAsync();
+
+                    // Check Error
+                    if (result < 0)
+                    {
+                        this.logger.LogError("Error inserting data into Database");
+                        ret.QueryStatus = "Error inserting data into Database";
+                    }
+
+                    ret.SuccessfulWrites = result;
+                }
+                conn.Close();
             }
-            conn.Close();
+            catch (Exception ex)
+            {
+                this.logger.LogError("Exception thrown accessing Database {0}", ex.Message);
+            }
 
             return ret;
         }
@@ -130,28 +145,36 @@ namespace C_C_Test.DataAccess
         {
             var retData = new List<RetrievedDataDto>();
 
-            SqlConnection conn = new SqlConnection(DefaultConnection());
-            conn.Open();
-            string querty = "SELECT MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode FROM dbo.C_C_Test_Data";
-
-            using (SqlCommand command = new SqlCommand(querty, conn))
+            try
             {
-                using (SqlDataReader reader = command.ExecuteReader())
+                SqlConnection conn = new SqlConnection(DefaultConnection());
+                conn.Open();
+                string querty = "SELECT MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode FROM dbo.C_C_Test_Data";
+
+                using (SqlCommand command = new SqlCommand(querty, conn))
                 {
-                    while (await reader.ReadAsync())
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        retData.Add(new RetrievedDataDto { 
-                            MPAN = reader.GetDecimal(0), 
-                            MeterSerial = reader.GetString(1), 
-                            DateOfInstallation = reader.GetDateTime(2).ToString(),
-                            AddressLine = reader.GetString(3) , 
-                            PostCode = reader.GetString(4)
-                        });
+                        while (await reader.ReadAsync())
+                        {
+                            retData.Add(new RetrievedDataDto
+                            {
+                                MPAN = reader.GetDecimal(0),
+                                MeterSerial = reader.GetString(1),
+                                DateOfInstallation = reader.GetDateTime(2).ToString(),
+                                AddressLine = reader.GetString(3),
+                                PostCode = reader.GetString(4)
+                            });
+                        }
                     }
                 }
-            }
 
-            conn.Close();
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError("Exception thrown accessing Database {0}", ex.Message);
+            }
 
             return retData;
         }

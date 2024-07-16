@@ -10,3 +10,5 @@
 /C_C_Test/.vs/ProjectEvaluation/c_c_test.metadata.v7.bin
 /.vs/VSWorkspaceState.json
 /C_C_Test/.vs/ProjectEvaluation/c_c_test.projects.v7.bin
+/UnitTests/bin/Debug/net8.0
+/UnitTests/obj
