@@ -3,6 +3,7 @@ using C_C_Test.Conversions;
 using C_C_Test.DataAccess;
 using C_C_Test.FileIO;
 using MediatR;
+using Serilog;
 
 internal class Program
 {
@@ -15,8 +16,14 @@ internal class Program
         builder.Services.AddScoped<IFileParsing, FileParsing>();
         builder.Services.AddScoped<IDataRepository, DataRepository>();
         builder.Services.AddScoped<IConversion, Conversion>();
-
+        
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+        Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
+
+        builder.Logging.AddSerilog();
 
         var app = builder.Build();
 

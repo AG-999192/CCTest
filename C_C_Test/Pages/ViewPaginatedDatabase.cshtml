@@ -1,0 +1,53 @@
+﻿@page
+@model C_C_Test.Pages.ViewPaginatedDatabaseModel
+@{
+}
+
+<div id=""></div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                MPAN
+            </th>
+            <th>
+                Meter Serial
+            </th>
+            <th>
+                Date Of Installation
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                PostCode
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var w in Model.ViewDatabase)
+        {
+            <tr>
+                <td>@w.MPAN</td>
+                <td>@w.MeterSerial</td>
+                <td>@w.DateOfInstallation</td>
+                <td>@w.AddressLine</td>
+                <td>@w.PostCode</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <ul class="pagination">
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a asp-page="/viewpaginateddatabase" asp-route-currentpage="@i" class="page-link">@i</a>
+            </li>
+        }
+    </ul>
+</div>
+

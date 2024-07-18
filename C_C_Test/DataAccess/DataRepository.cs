@@ -1,5 +1,9 @@
 ﻿using C_C_Test.Dtos;
+using C_C_Test.Emuns;
 using Microsoft.Data.SqlClient;
+using System;
+using System.Data;
+using System.Globalization;
 
 namespace C_C_Test.DataAccess
 {
@@ -41,7 +45,7 @@ namespace C_C_Test.DataAccess
             {
                 SqlConnection conn = new SqlConnection(DefaultConnection());
 
-                // TODO use batching for storing.
+                // TODO use batching for storing. SqlBulkCopy? BULK INSERT with .csv? TRANSACTION?';
 
                 String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
 
@@ -135,8 +139,53 @@ namespace C_C_Test.DataAccess
             return ret;
         }
 
+        public async Task<DBStatusDto> AddDataBulk(List<ParsedDataDto> ParsedData, DBStatusDto status)
+        {
+            var ret = new DBStatusDto();
+
+            try
+            {
+                SqlConnection conn = new SqlConnection(DefaultConnection());
+
+                String query = "INSERT INTO dbo.C_C_Test_Data (MPAN, MeterSerial,DateOfInstallation,AddressLine1,PostCode) VALUES (@MPAN, @MeterSerial,@DateOfInstallation,@AddressLine1,@PostCode)";
+
+                DataTable table = new DataTable("C_C_Test_Data");
+                table.Columns.Add(new DataColumn("ID", typeof(decimal)));
+                table.Columns.Add(new DataColumn("MeterSerial", typeof(string)));
+                table.Columns.Add(new DataColumn("DateOfInstallation", typeof(DateTime)));
+                table.Columns.Add(new DataColumn("AddressLine1", typeof(string)));
+                table.Columns.Add(new DataColumn("PostCode", typeof(string)));
+
+                foreach (var data in ParsedData)
+                {
+                    table.Rows.Add(data.MPAN, data.MeterSerial, ParseString(data.DateOfInstallation), data.AddressLine, data.PostCode);
+                }
+
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
+                {
+                    conn.Open();
+                    bulkCopy.DestinationTableName = "C_C_Test_Data";
+                    bulkCopy.WriteToServer(table);
+                }
+
+                conn.Close();
+
+                if (string.IsNullOrEmpty(status.QueryStatus))
+                {
+                    status.QueryStatus = "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError("Exception thrown accessing Database {0}", ex.Message);
+            }
+
+            return ret;
+        }
+
         /// <summary>
         /// Returns list of records from database.
+        /// TODO add pagination
         /// </summary>
         /// <returns>List<RetrievedData></returns>
         public async Task<List<RetrievedDataDto>> GetData()
@@ -159,9 +208,9 @@ namespace C_C_Test.DataAccess
                             {
                                 MPAN = reader.GetDecimal(0),
                                 MeterSerial = reader.GetString(1),
-                                DateOfInstallation = reader.GetDateTime(2).ToString(),
-                                AddressLine = reader.GetString(3),
-                                PostCode = reader.GetString(4)
+                                DateOfInstallation = reader.GetDateTime(2).Date.ToString("D"),
+                                AddressLine = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                                PostCode = reader.IsDBNull(4) ? string.Empty : reader.GetString(4)
                             });
                         }
                     }
@@ -184,6 +233,30 @@ namespace C_C_Test.DataAccess
         private string DefaultConnection()
         {
             return this.configuration["ConnectionStrings:DefaultConnection"];
+        }
+
+        /// <summary>
+        /// String parsing
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>DateTime</returns>
+        private DateTime ParseString(string str)
+        {
+            CultureInfo enUK = new CultureInfo("en-GB");
+            DateTime dateValue;
+            string year = str.Substring(0, 4);
+            string month = str.Substring(4, 2);
+            string day = str.Substring(6, 2);
+            string formatted = month + "/" + day + "/" + year;
+
+            if (DateTime.TryParseExact(formatted, "MM/dd/yyyy", enUK, DateTimeStyles.None, out dateValue))
+            {
+                return dateValue;
+            }
+            else
+            {
+                return DateTime.MinValue;
+            }
         }
     }
 }

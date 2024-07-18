@@ -1,4 +1,4 @@
-﻿namespace C_C_Test.Queries
+﻿namespace C_C_Test.Common
 {
     using MediatR;
 

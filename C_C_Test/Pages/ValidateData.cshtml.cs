@@ -46,7 +46,7 @@ namespace C_C_Test.Pages
         /// <returns>IActionResult</returns>
         public async Task<IActionResult> OnGet()
         {
-            this.logger.LogDebug("Get method called on Validation View Model");
+            this.logger.LogInformation("Get method called on Validation View Model");
 
             ValidationView = await this.mediator.Send(new ValidateDataQuery() { });
 

@@ -1,4 +1,5 @@
 ﻿using C_C_Test.Models;
+using MediatR;
 
 namespace C_C_Test.Queries
 {
@@ -6,7 +7,7 @@ namespace C_C_Test.Queries
     /// Implementation
     /// Returns ValidationViewModel
     /// </summary>
-    public class ValidateDataQuery : QueryBase<ValidationViewModel>
+    public class ValidateDataQuery : IRequest<ValidationViewModel>
     {
         /// <summary>
         /// constructor.

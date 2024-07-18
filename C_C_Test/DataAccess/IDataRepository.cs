@@ -12,5 +12,7 @@ namespace C_C_Test.DataAccess
         Task<DBStatusDto> AddData(ParsedDataDto ParsedData);
 
         Task<List<RetrievedDataDto>> GetData();
+
+        Task<DBStatusDto> AddDataBulk(List<ParsedDataDto> ParsedData, DBStatusDto status);
     }
 }

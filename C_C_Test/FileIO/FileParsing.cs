@@ -31,6 +31,10 @@ namespace C_C_Test.FileIO
 
         const int DateOfInstallation_SIZE = 8;
 
+        const int Address_SIZE = 40;
+
+        const int Postcode_SIZE = 10;
+
         /// <summary>
         /// Constructor for FileParsing.
         /// </summary>
@@ -232,6 +236,7 @@ namespace C_C_Test.FileIO
             CultureInfo enUK = new CultureInfo("en-GB");
             DateTime dateValue;
 
+            // Check Mandatory fields are present and correctly sized
             if (string.IsNullOrEmpty(data[(int)DataEnums.MPAN]) || data[(int)DataEnums.MPAN].Length != MPAN_SIZE ||
                 string.IsNullOrEmpty(data[(int)DataEnums.MeterSerial]) || data[(int)DataEnums.MeterSerial].Length > MeterSerial_SIZE ||
                 string.IsNullOrEmpty(data[(int)DataEnums.DateOfInstallation]) || data[(int)DataEnums.DateOfInstallation].Length != DateOfInstallation_SIZE)
@@ -245,6 +250,7 @@ namespace C_C_Test.FileIO
 
             string formatted = month + "/" + day + "/" + year;
 
+            // Check date is valid and in the past
             if (DateTime.TryParseExact(formatted, "MM/dd/yyyy", enUK, DateTimeStyles.None, out dateValue))
             {
                 if (dateValue >= DateTime.Now)
@@ -258,23 +264,46 @@ namespace C_C_Test.FileIO
             }
             decimal mpan;
             decimal.TryParse(data[(int)DataEnums.MPAN], out mpan);
+
+            if(mpan == 0)
+            {
+                this.logger.LogWarning($"Invalid MPAN {data[(int)DataEnums.MPAN]}");
+                return null;
+            }
+
             ret.MPAN = mpan;
             ret.MeterSerial = data[(int)DataEnums.MeterSerial];
             ret.DateOfInstallation = data[(int)DataEnums.DateOfInstallation];
 
+            // Check optional items
             if (items >= 4)
             {
-                if (string.IsNullOrEmpty(data[(int)DataEnums.AddressLine]))
+                if ((!string.IsNullOrEmpty(data[(int)DataEnums.AddressLine])))
                 {
-                    ret.AddressLine = data[(int)DataEnums.AddressLine];
+                    if(data[(int)DataEnums.AddressLine].Length <= Address_SIZE)
+                    {
+                        ret.AddressLine = data[(int)DataEnums.AddressLine];
+                    }
+                    else
+                    {
+                        this.logger.LogWarning($"Oversized AddressLine {data[(int)DataEnums.AddressLine]}");
+                    }
                 }
+                
             }
 
             if (items >= 5)
             {
-                if (string.IsNullOrEmpty(data[(int)DataEnums.PostCode]))
+                if ((!string.IsNullOrEmpty(data[(int)DataEnums.PostCode])))
                 {
-                    ret.PostCode = data[(int)DataEnums.PostCode];
+                    if (data[(int)DataEnums.PostCode].Length <= Postcode_SIZE)
+                    {
+                        ret.PostCode = data[(int)DataEnums.PostCode];
+                    }
+                    else 
+                    {
+                        this.logger.LogWarning($"Oversized PostCode {data[(int)DataEnums.PostCode]}"); 
+                    }
                 }
             }
 

@@ -36,7 +36,7 @@ namespace C_C_Test.Pages
             this.mediator = mediator;
         }
 
-        public PaginatedList<DataViewModel> ViewDatabase { get; set; } = null!;
+        public List<DataViewModel> ViewDatabase { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets index. Used to turn pages.
@@ -50,13 +50,11 @@ namespace C_C_Test.Pages
         /// <returns>IActionResult</returns>
         public async Task<IActionResult> OnGet()
         {
-            this.logger.LogDebug("Get method called on ViewDatabaseModel");
+            this.logger.LogInformation("Get method called on ViewDatabaseModel");
 
             var ret =  await this.mediator.Send(new GetDataQuery() { });
 
-            var vmsq = ret.AsQueryable();
-
-            this.ViewDatabase = vmsq.ToPagedList(this.PageIndex, 50);
+            this.ViewDatabase = ret;
 
             // TODO Add pagination
 

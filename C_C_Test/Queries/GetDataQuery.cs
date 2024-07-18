@@ -1,4 +1,5 @@
 ﻿using C_C_Test.Models;
+using MediatR;
 
 namespace C_C_Test.Queries
 {
@@ -6,7 +7,7 @@ namespace C_C_Test.Queries
     /// Implementation
     /// Returns List<DataViewModel>
     /// </summary>
-    public class GetDataQuery : QueryBase<List<DataViewModel>>
+    public class GetDataQuery : IRequest<List<DataViewModel>>
     {
         /// <summary>
         /// constructor.

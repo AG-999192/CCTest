@@ -39,6 +39,7 @@ namespace C_C_Test.Services
         /// <returns>List<DataViewModel></returns>
         public async Task<List<DataViewModel>> Handle(GetDataQuery request, CancellationToken cancellationToken)
         {
+            logger.LogDebug("Handle called in GetDataQueryHandler");
             List<DataViewModel> viewDatabase = new List<DataViewModel>();
 
             var retVal = await this.dataRepository.GetData();
